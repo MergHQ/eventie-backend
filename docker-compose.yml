@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: .
+      shm_size: 1G
+    ports:
+      - "4200:8080"
+    volumes:
+      - ./src:/app/src
