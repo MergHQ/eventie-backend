@@ -18,4 +18,4 @@ def getEvents():
   return create_response(event_service.getAllEvents())
 
 if __name__ == "__main__":
-  app.run('0.0.0.0', port=int(os.environ['PORT']) if os.environ['ENV'] == 'production' else 8080, debug=True)
+  app.run('0.0.0.0', port=int(os.environ['PORT']) if os.environ['ENV'] == 'production' else 8080, debug=os.environ['ENV'] != 'production')
