@@ -136,3 +136,5 @@ dmypy.json
 # End of https://www.gitignore.io/api/python,visualstudiocode
 
 .DS_STORE
+
+node_modules

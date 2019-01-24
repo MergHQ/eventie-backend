@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM nikolaik/python-nodejs:latest
 
 WORKDIR /app
 

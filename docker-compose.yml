@@ -5,6 +5,12 @@ services:
       context: .
       shm_size: 1G
     ports:
-      - "4200:8080"
+      - 4200:8080
     volumes:
       - ./src:/app/src
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: eventie
