@@ -2,6 +2,8 @@
 
 Backend for eventie, a event calendar and enrollment system, made in python.
 
+[Link to frontend](https://github.com/MergHQ/eventie-frontend)
+
 ### Setting up a devenv
 
 For setting up a development environment, you need docker, docker compose and a postgres database.
