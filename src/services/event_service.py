@@ -5,14 +5,14 @@ def getUpcomingEvents():
   dbconn = getDbConnection()
   cursor = dbconn.cursor()
   cursor.execute('SELECT * FROM events where time >= now();')
-  result = cursor.fetchmany()
+  result = cursor.fetchall()
   return list(map(createEventObject, result))
 
 def getPastEvents():
   dbconn = getDbConnection()
   cursor = dbconn.cursor()
   cursor.execute('SELECT * FROM events where time < now();')
-  result = cursor.fetchmany()
+  result = cursor.fetchall()
   return list(map(createEventObject, result))
 
 def createEventObject(rawQueryData):
