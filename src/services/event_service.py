@@ -1,10 +1,17 @@
 import datetime
 from database import getDbConnection
 
-def getAllEvents():
+def getUpcomingEvents():
   dbconn = getDbConnection()
   cursor = dbconn.cursor()
-  cursor.execute('SELECT * FROM events;')
+  cursor.execute('SELECT * FROM events where time >= now();')
+  result = cursor.fetchmany()
+  return list(map(createEventObject, result))
+
+def getPastEvents():
+  dbconn = getDbConnection()
+  cursor = dbconn.cursor()
+  cursor.execute('SELECT * FROM events where time < now();')
   result = cursor.fetchmany()
   return list(map(createEventObject, result))
 
