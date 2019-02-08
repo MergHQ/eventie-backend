@@ -3,6 +3,7 @@
 Backend for eventie, a event calendar and enrollment system, made in python.
 
 [Link to frontend](https://github.com/MergHQ/eventie-frontend)
+[Link to application](http://eventie-frontend.herokuapp.com/)
 
 ### Setting up a devenv
 
