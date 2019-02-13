@@ -1,7 +1,10 @@
 from flask import Flask, json, Response, request
 from services import event_service
+from flask_cors import CORS, cross_origin
 import os
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def create_response(data, status = 200):
   return Response(json.dumps(data), status=200, mimetype='application/json')
