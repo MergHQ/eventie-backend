@@ -14,4 +14,5 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: eventie
+      JWT_SECRET: bask
       ENV: dev
