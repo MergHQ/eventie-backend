@@ -45,6 +45,8 @@ def getUser():
 @app.route('/api/users', methods=['POST'])
 @cross_origin()
 def createUser():
+  if request.json is None or 'username' not in request.json or 'password' not in request.json or 'email' not in request.json or 'name' not in request.json:
+    return create_response({'error': 'Invalid post body'}, 400)
   data = user_service.createUser(request.json)
   return create_response(data)
 
