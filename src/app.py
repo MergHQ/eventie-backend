@@ -67,6 +67,24 @@ def authUser():
   
   return create_response(token)
 
+@app.route('/api/events/<eventId>', methods=['PUT'])
+@cross_origin()
+def enrollToEvent(eventId):
+  token = request.headers.get('Authorization')
+
+  if token is None:
+    return create_response({'error': 'Unauthorized'}, 401)
+
+  decoded_token = jwt.decode(token, os.environ['JWT_SECRET'], algorithms=['HS256'])
+
+  if decoded_token is None:
+    return create_response({'error': 'Unauthorized'}, 401)
+  result = event_service.createEventRegistration(eventId, decoded_token['user_id'])
+  if result is None:
+    return create_response({'error': 'You have already registered to this event or registration time is over'}, 400)
+  user = user_service.getUser(decoded_token['user_id'])
+  return create_response({'eventId': result, 'user': user})
+
 
 if __name__ == "__main__":
   app.run('0.0.0.0', port=int(os.environ['PORT']) if os.environ['ENV'] == 'production' else 8080, debug=os.environ['ENV'] != 'production')

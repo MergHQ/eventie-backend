@@ -8,7 +8,6 @@ def loginUser(username, password):
   cursor = dbconn.cursor()
   cursor.execute('SELECT id, username, password_salt FROM users where username = %s;', (username,))
   id, username, password_salt = cursor.fetchone()
-  print(password_salt)
   if id is None:
     return None
   if bcrypt.checkpw(password.encode('utf8'), password_salt.encode('utf8')):
