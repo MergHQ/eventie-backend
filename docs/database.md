@@ -1,1 +1,1 @@
-![Diagram][./img/36cb4889.png]
+![Diagram](/docs/img/9cbfb1aa.png)
