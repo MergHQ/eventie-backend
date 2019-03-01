@@ -10,6 +10,18 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def create_response(data, status=200):
   return Response(json.dumps(data), status, mimetype='application/json')
 
+def authorizeRequest(request):
+  token = request.headers.get('Authorization')
+
+  if token is None:
+    return None
+
+  decoded_token = jwt.decode(token, os.environ['JWT_SECRET'], algorithms=['HS256'])
+
+  if decoded_token is None:
+    return None
+  return decoded_token
+
 @app.route('/api/events/upcoming')
 def getUpcomingEvents():
   events = event_service.getUpcomingEvents()
@@ -23,22 +35,20 @@ def getPastEvents():
 @app.route('/api/events', methods=['POST'])
 @cross_origin()
 def createNewEvent():
-  data = event_service.createEvent(request.json)
+  decoded_token = authorizeRequest(request)
+  if decoded_token is None:
+    return create_response({'error': 'Unauthorized'}, 401)
+  if request.json is None or 'name' not in request.json or 'description' not in request.json or 'registration_start' not in request.json or 'registration_end' not in request.json or 'time' not in request.json or 'max_participants' not in request.json:
+    return create_response({'error': 'Invalid post body'}, 400)
+  data = event_service.createEvent(request.json, decoded_token['user_id'])
   return create_response(data)
 
 @app.route('/api/users/me')
 @cross_origin()
 def getUser():
-  token = request.headers.get('Authorization')
-
-  if token is None:
-    return create_response({'error': 'Unauthorized'}, 401)
-
-  decoded_token = jwt.decode(token, os.environ['JWT_SECRET'], algorithms=['HS256'])
-
+  decoded_token = authorizeRequest(request)
   if decoded_token is None:
     return create_response({'error': 'Unauthorized'}, 401)
-
   data = user_service.getUser(decoded_token['user_id'])
   return create_response(data)
 
@@ -70,13 +80,7 @@ def authUser():
 @app.route('/api/events/<eventId>', methods=['PUT'])
 @cross_origin()
 def enrollToEvent(eventId):
-  token = request.headers.get('Authorization')
-
-  if token is None:
-    return create_response({'error': 'Unauthorized'}, 401)
-
-  decoded_token = jwt.decode(token, os.environ['JWT_SECRET'], algorithms=['HS256'])
-
+  decoded_token = authorizeRequest(request)
   if decoded_token is None:
     return create_response({'error': 'Unauthorized'}, 401)
   result = event_service.createEventRegistration(eventId, decoded_token['user_id'])
