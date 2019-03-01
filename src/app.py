@@ -3,6 +3,7 @@ from services import event_service, user_service, auth_service
 from flask_cors import CORS, cross_origin
 import jwt
 import os
+import sys
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -88,6 +89,37 @@ def enrollToEvent(eventId):
     return create_response({'error': 'You have already registered to this event or registration time is over'}, 400)
   user = user_service.getUser(decoded_token['user_id'])
   return create_response({'eventId': result, 'user': user})
+
+@app.route('/api/events/<eventId>', methods=['PATCH'])
+@cross_origin()
+def updateEvent(eventId):
+  decoded_token = authorizeRequest(request)
+  if decoded_token is None:
+    return create_response({'error': 'Unauthorized'}, 401)
+  if request.json is None  or 'name' not in request.json or 'description' not in request.json or 'registrationStart' not in request.json or 'registrationEnd' not in request.json or 'time' not in request.json or 'maxParticipants' not in request.json:
+    return create_response({'error': 'Invalid post body'}, 400)
+  event = event_service.getEvent(eventId)
+  print(event, file=sys.stderr)
+  if event['author']['id'] != decoded_token['user_id']:
+    return create_response({'error': 'Forbidden'}, 403)
+  
+  request.json['id'] = eventId
+  
+  result = event_service.updateEvent(request.json, decoded_token['user_id'])
+  return create_response(result)
+  
+@app.route('/api/events/<eventId>', methods=['DELETE'])
+@cross_origin()
+def deleteEvent(eventId):
+  decoded_token = authorizeRequest(request)
+  if decoded_token is None:
+    return create_response({'error': 'Unauthorized'}, 401)
+  print(eventId, file=sys.stderr)
+  event = event_service.getEvent(eventId)
+  if event['author']['id'] != decoded_token['user_id']:
+    return create_response({'error': 'Forbidden'}, 403)
+
+  return create_response(event_service.deleteEvent(eventId))
 
 
 if __name__ == "__main__":
