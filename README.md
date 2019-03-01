@@ -14,3 +14,6 @@ For setting up a development environment, you need docker, docker compose and a 
 4. run `docker-compose up`
 5. ???
 6. go to `localhost:4200`
+
+[Tietokantakaavio](/docs/database.md)
+[Käyttötapaukset](/docs/docs.md)
